@@ -299,16 +299,16 @@ describe('karmia-database-adapter-mongodb', function () {
                     table.get(conditions).then(function (result) {
                         const data = fixture[0];
 
-                        expect(data['user_id']).to.be(result['user_id']);
-                        expect(data['email']).to.be(result['email']);
-                        expect(data['name']).to.be(result['name']);
-                        expect(data['birthday']).to.be(result['birthday']);
-                        expect(data['blood_type']).to.be(result['blood_type']);
-                        expect(data['size']).to.eql(result['size']);
-                        expect(data['favorite_food']).to.be(result['favorite_food']);
-                        expect(data['dislikes_food']).to.be(result['dislikes_food']);
-                        expect(data['color']).to.be(result['color']);
-                        expect(data['unit']).to.be(result['unit']);
+                        expect(result['user_id']).to.be(data['user_id']);
+                        expect(result['email']).to.be(data['email']);
+                        expect(result['name']).to.be(data['name']);
+                        expect(result['birthday']).to.be(data['birthday']);
+                        expect(result['blood_type']).to.be(data['blood_type']);
+                        expect(result['size']).to.eql(data['size']);
+                        expect(result['favorite_food']).to.be(data['favorite_food']);
+                        expect(result['dislikes_food']).to.be(data['dislikes_food']);
+                        expect(result['color']).to.be(data['color']);
+                        expect(result['unit']).to.be(data['unit']);
 
                         done();
                     }).catch(function (error) {
@@ -326,18 +326,46 @@ describe('karmia-database-adapter-mongodb', function () {
 
                         const data = fixture[0];
 
-                        expect(data['user_id']).to.be(result['user_id']);
-                        expect(data['email']).to.be(result['email']);
-                        expect(data['name']).to.be(result['name']);
-                        expect(data['birthday']).to.be(result['birthday']);
-                        expect(data['blood_type']).to.be(result['blood_type']);
-                        expect(data['size']).to.eql(result['size']);
-                        expect(data['favorite_food']).to.be(result['favorite_food']);
-                        expect(data['dislikes_food']).to.be(result['dislikes_food']);
-                        expect(data['color']).to.be(result['color']);
-                        expect(data['unit']).to.be(result['unit']);
+                        expect(result['user_id']).to.be(data['user_id']);
+                        expect(result['email']).to.be(data['email']);
+                        expect(result['name']).to.be(data['name']);
+                        expect(result['birthday']).to.be(data['birthday']);
+                        expect(result['blood_type']).to.be(data['blood_type']);
+                        expect(result['size']).to.eql(data['size']);
+                        expect(result['favorite_food']).to.be(data['favorite_food']);
+                        expect(result['dislikes_food']).to.be(data['dislikes_food']);
+                        expect(result['color']).to.be(data['color']);
+                        expect(result['unit']).to.be(data['unit']);
 
                         done();
+                    });
+                });
+
+                it('Projection specified', function (done) {
+                    const table = database.table(key),
+                        conditions = {user_id: 1},
+                        projection = {
+                            user_id: true,
+                            email: true,
+                            name: true
+                        };
+                    table.get(conditions, projection).then(function (result) {
+                        const data = fixture[0];
+
+                        expect(result['user_id']).to.be(data['user_id']);
+                        expect(result['email']).to.be(data['email']);
+                        expect(result['name']).to.be(data['name']);
+                        expect(result['birthday']).to.be(undefined);
+                        expect(result['blood_type']).to.be(undefined);
+                        expect(result['size']).to.eql(undefined);
+                        expect(result['favorite_food']).to.be(undefined);
+                        expect(result['dislikes_food']).to.be(undefined);
+                        expect(result['color']).to.be(undefined);
+                        expect(result['unit']).to.be(undefined);
+
+                        done();
+                    }).catch(function (error) {
+                        done(error);
                     });
                 });
             });
@@ -416,6 +444,32 @@ describe('karmia-database-adapter-mongodb', function () {
                         done();
                     });
                 });
+
+                it('Projection specified', function (done) {
+                    const table = database.table(key),
+                        projection = {
+                            user_id: true,
+                            email: true,
+                            name: true
+                        };
+
+                    table.find({}, projection).then(function (result) {
+                        fixture.forEach(function (data, index) {
+                            expect(result[index]['user_id']).to.be(data['user_id']);
+                            expect(result[index]['email']).to.be(data['email']);
+                            expect(result[index]['name']).to.be(data['name']);
+                            expect(result[index]['birthday']).to.be(undefined);
+                            expect(result[index]['blood_type']).to.be(undefined);
+                            expect(result[index]['size']).to.eql(undefined);
+                            expect(result[index]['favorite_food']).to.be(undefined);
+                            expect(result[index]['dislikes_food']).to.be(undefined);
+                            expect(result[index]['color']).to.be(undefined);
+                            expect(result[index]['unit']).to.be(undefined);
+                        });
+
+                        done();
+                    });
+                });
             });
 
             describe('Should find items', function () {
@@ -469,6 +523,37 @@ describe('karmia-database-adapter-mongodb', function () {
                             expect(data['dislikes_food']).to.be(result[index]['dislikes_food']);
                             expect(data['color']).to.be(result[index]['color']);
                             expect(data['unit']).to.be(result[index]['unit']);
+                        });
+
+                        done();
+                    });
+                });
+
+                it('Projection specified', function (done) {
+                    const table = database.table(key),
+                        conditions = {
+                            user_id: {
+                                $in: [1, 2, 3]
+                            }
+                        },
+                        projection = {
+                            user_id: true,
+                            email: true,
+                            name: true
+                        };
+
+                    table.find(conditions, projection).then(function (result) {
+                        fixture.slice(0, 3).forEach(function (data, index) {
+                            expect(result[index]['user_id']).to.be(data['user_id']);
+                            expect(result[index]['email']).to.be(data['email']);
+                            expect(result[index]['name']).to.be(data['name']);
+                            expect(result[index]['birthday']).to.be(undefined);
+                            expect(result[index]['blood_type']).to.be(undefined);
+                            expect(result[index]['size']).to.eql(undefined);
+                            expect(result[index]['favorite_food']).to.be(undefined);
+                            expect(result[index]['dislikes_food']).to.be(undefined);
+                            expect(result[index]['color']).to.be(undefined);
+                            expect(result[index]['unit']).to.be(undefined);
                         });
 
                         done();

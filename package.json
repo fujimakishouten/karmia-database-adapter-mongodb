@@ -1,6 +1,6 @@
 {
     "name": "karmia-database-adapter-mongodb",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "MongoDB adapter for Karmia Database",
     "homepage": "https://github.com/fujimakishouten/karmia-database-adapter-mongodb",
     "license": "MIT",
